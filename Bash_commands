@@ -1,2 +1,5 @@
 find -name '*.fastq' -exec cp "{}" blabla/  \; #Find files within subfolders and copy them to one directory. Replace directory name 
 "blabla"
+
+EMTAB6863 = getAE("E-MTAB-6863", type = "full") ##Download data from array 
+express using R package "ArrayExpress
