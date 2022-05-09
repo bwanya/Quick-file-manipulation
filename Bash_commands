@@ -1,0 +1,2 @@
+find -name '*.fastq' -exec cp "{}" blabla/  \; #Find files within subfolders and copy them to one directory. Replace directory name 
+"blabla"
