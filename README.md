@@ -1,2 +1,1 @@
-# Quick-Bash-commands
-Commands for quick file manipulations
+# Basic Commands for quick file manipulations
