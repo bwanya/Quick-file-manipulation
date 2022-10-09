@@ -1,5 +1,50 @@
 find -name '*.fastq' -exec cp "{}" blabla/  \; #Find files within subfolders and copy them to one directory. Replace directory name 
 "blabla"
 
-EMTAB6863 = getAE("E-MTAB-6863", type = "full") ##Download data from array 
+##Download data from ArrayExpress 
+
+EMTAB6863 = getAE("E-MTAB-6863", type = "full") 
 express using R package "ArrayExpress
+
+# Remove sequences less than a specified length
+
+seqtk seq -L 650 Asian_sequences.fasta > file.fasta
+
+# Trim seqs to a uniform length
+
+fasta_formatter -i file.fasta | fastx_trimmer -l 650 > output.fa
+
+# Determine length of all sequences in an alignment
+
+awk '/^>/ {if (seqlen) print seqlen;print;seqlen=0;next} {seqlen+=length($0)}END{print seqlen}' combined_seqs.fa
+
+# Renaming the fasta sequences (Returns values without accession numbers)
+
+for i in {1..106}; do echo American_$i; done | paste - <(sed '/^>/d' North_America.fas) | sed -e 's/^/>/' -e 's/\t/\n/' > North_America.fa # Renames sequences in the fasta file
+
+ ###########
+   # IQ-Tree #
+   ###########
+# Substitution model finder for sequence alignment
+
+iqtree -s MUSCLE_Alignment.fasta -m MFP
+
+# Phylogenetic run based on appropriate substitution model
+
+ iqtree -s MUSCLE_Alignment.fasta -m HKY+F+R3 -bb 1000 -bnni -nt AUTO -v
+
+   ############
+   # RaxmlHPC #
+   ############
+
+# Searching for the maximum likelihood tree
+
+raxmlHPC -m GTRGAMMA -p 12345 -#200 -s file.fasta -n output_fileName
+
+# Bootstrap run
+
+raxmlHPC -m GTRGAMMA -p 12345 -b 12345 -# 1000 -s file.fasta -n outputFileName 
+
+# Drawing bipartition tree & combining ML tree with bootstraps
+
+raxmlHPC -m GTRCAT -p 12345 -f b -t RAXML_Best_tree -z RaxML_Bootstrap -n OutputFileName
