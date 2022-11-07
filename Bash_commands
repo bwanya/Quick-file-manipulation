@@ -22,6 +22,12 @@ awk '/^>/ {if (seqlen) print seqlen;print;seqlen=0;next} {seqlen+=length($0)}END
 
 for i in {1..106}; do echo American_$i; done | paste - <(sed '/^>/d' North_America.fas) | sed -e 's/^/>/' -e 's/\t/\n/' > North_America.fa # Renames sequences in the fasta file
 
+# Combine multiple CSV files into 1
+csvstack *.csv  > output.csv
+
+# Extract specific columns from csv file
+cat file.csv | cut -f 1,6 -s # In this case, column 1&6   
+
  ###########
    # IQ-Tree #
    ###########
